@@ -7,11 +7,26 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.robot.commands.StartVisionCommand;
+
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
+  public Joystick m_leftStick;
+
+  public void init() {
+    m_leftStick = new Joystick(0);
+    JoystickButton visionButton = new JoystickButton(m_leftStick, 1);
+    visionButton.whenPressed(new StartVisionCommand());
+
+    visionButton.close();
+  }
+  // m_rightStick = new Joystick(1);
+  
   //// CREATING BUTTONS
   // One type of button is a joystick button which is any button on a
   //// joystick.
