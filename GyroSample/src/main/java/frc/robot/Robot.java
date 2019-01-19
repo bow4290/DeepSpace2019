@@ -7,12 +7,16 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.GyroBase;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PWMVictorSPX;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
+//import sun.jvm.hotspot.code.AdapterBlob;
 
 
 /**
@@ -22,7 +26,7 @@ import edu.wpi.first.wpilibj.networktables.NetworkTable;
  */
 public class Robot extends TimedRobot {
   private static final double kAngleSetpoint = 0;
-  private static final double kP = 1.005; // propotional turning constant
+  private static final double kP = 100.005; // propotional turning constant
 
   // gyro calibration constant, may need to be adjusted;
   // gyro value of 360 is set to correspond to one full revolution
@@ -30,20 +34,29 @@ public class Robot extends TimedRobot {
 
   private static final int kLeftMotorPort = 2;
   private static final int kRightMotorPort = 3;
-  private static final int kGyroPort = 1;
+  private static final int kGyroPort = 0;
   private static final int kJoystickPort = 0;
-  private NetworkTable table = NetworkTable.getTable("tables");
+  private NetworkTable table = NetworkTable.getTable("datatable");
 
 
   private final DifferentialDrive m_myRobot
       = new DifferentialDrive(new PWMVictorSPX(kLeftMotorPort),
       new PWMVictorSPX(kRightMotorPort));
-  private final AnalogGyro m_gyro = new AnalogGyro(kGyroPort);
+ // public static AnalogGyro m_gyro;
+  public static ADXRS450_Gyro m_gyro;
   private final Joystick m_joystick = new Joystick(kJoystickPort);
 
   @Override
   public void robotInit() {
-    m_gyro.setSensitivity(kVoltsPerDegreePerSecond);
+    //m_gyro = new AnalogGyro(kGyroPort);]
+    m_gyro =  new ADXRS450_Gyro();
+    double angleGyro = m_gyro.getAngle();
+    double turningValue = (kAngleSetpoint - angleGyro) * kP;
+    table.putNumber("Current Gyro", angleGyro);
+    table.putNumber("Turning Value", turningValue);
+    
+
+    // m_gyro.setSensitivity(kVoltsPerDegreePerSecond);
   }
 
   /**
@@ -52,12 +65,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    // double angleGyro = new m_myRobot.m_gyro.getAngle();
-    double turningValue = (kAngleSetpoint - m_gyro.getAngle()) * kP;
+    double angleGyro = m_gyro.getAngle();
+    double turningValue = (kAngleSetpoint - angleGyro) * kP;
+
     // Invert the direction of the turn if we are going backwards
-    turningValue = Math.copySign(turningValue, m_joystick.getY());
-    m_myRobot.arcadeDrive(m_joystick.getY(), turningValue);
-    table.putNumber("Total Average", m_gyro.getAngle());
+    // turningValue = Math.copySign(turningValue, m_joystick.getY());
+    //m_myRobot.arcadeDrive(m_joystick.getY(), turningValue);
+    table.putNumber("Current Gyro", angleGyro);
+    table.putNumber("Turning Value", turningValue);
     
 
   }
