@@ -23,7 +23,7 @@ public class OI {
     JoystickButton visionButton = new JoystickButton(m_leftStick, 1);
     visionButton.whenPressed(new StartVisionCommand());
 
-    visionButton.close();
+    // visionButton.close();
   }
   // m_rightStick = new Joystick(1);
   

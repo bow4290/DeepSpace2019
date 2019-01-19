@@ -5,6 +5,8 @@ import edu.wpi.first.vision.VisionThread;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import frc.robot.Robot;
+
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 import org.opencv.core.Mat;
@@ -67,9 +69,9 @@ public class StartVisionCommand extends Command {
         }
         totalAverage = totalAverage / blobPoints.size();
     }
-        // table.putNumber("Total Average",totalAverage);
+        table.putNumber("Total Average",totalAverage);
 
-        // outputStream.putFrame(mat);
+        // OutputStream.putFrame(Mat);
             // if (!pipeline.findContoursOutput().isEmpty()) {
 	        // 	if (pipeline.findContoursOutput().size() > 1) {
 	        //         // Rect rectOne = Imgproc.boundingRect(pipeline.findContoursOutput().get(1));
