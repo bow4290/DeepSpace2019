@@ -35,16 +35,20 @@ import edu.wpi.first.cameraserver.CameraServer;
 public class Robot extends TimedRobot {
   public DifferentialDrive m_myRobot;
   private Joystick m_leftStick;
-  // private Joystick m_rightStick;
+  private Joystick m_rightStick;
+  private Spark spark8;
   Thread m_visionThread;
   NetworkTable table;
+  private Spark spark7;
 
 
   @Override
   public void robotInit() {
-    m_myRobot = new DifferentialDrive(new Spark(2), new Spark(3));
+    spark8 = new Spark(8);
+    spark7 = new Spark(9);
+    m_myRobot = new DifferentialDrive(spark7, spark8);
     m_leftStick = new Joystick(0);
-    // m_rightStick = new Joystick(1);
+    m_rightStick = new Joystick(1);
     JoystickButton visionButton = new JoystickButton(m_leftStick, 1);
     visionButton.whenPressed(new StartVisionCommand());
     // m_visionThread = new Thread(() -> {
@@ -104,6 +108,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    m_myRobot.arcadeDrive(m_leftStick.getY(), m_leftStick.getX());
+    m_myRobot.arcadeDrive(m_rightStick.getY(), m_rightStick.getX());
   }
 }
